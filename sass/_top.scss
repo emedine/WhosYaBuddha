@@ -2,26 +2,37 @@
 
 $maxWidth: 1350;
 
-@mixin relativeWidth($width, $minWidth: false) {
+@mixin relativeWidth($width, $minWidth: false, $visualIsVeryWide: false) {
 	span {
 		display: inline-block;
 		width: ($width / $maxWidth) * 100 * 1%;
 		position: relative;
-		margin-left: -((($width / $maxWidth) * 100) - 100)/2 * 1%;
+		@if $visualIsVeryWide == true {
+			margin-left: -((($width / $maxWidth) * 100) - 100)/2 * 1%;
+		}
 		// @if $minWidth != false {min-width: $minWidth * 1px;}
 	}
 	img {
 		width: 100%;
 		display: inline-block;
 	}
-
+	
+	width: 100%;
 	text-align: center;
 	position: absolute;
-	
+
 	@if $minWidth != false {
-		min-width: $minWidth * 1px;
+		img {
+			min-width: $minWidth * 1px;
+		}
+
+		// min-width: $minWidth * 1px;
 		@media only screen and (max-width: $minWidth * 1px) {
 			position: absolute;
+
+			img {
+				min-width: $minWidth * 1px;
+			}
 			
 			left: 50%;
 			margin-left: -($minWidth / 2) * 1px;
@@ -31,14 +42,13 @@ $maxWidth: 1350;
 			}
 		}
 	}
-
 }
 
 
 #top {
 	background-color: #2b4055; // Old browsers
 	@include filter-gradient(#2b4055, #2b4055, horizontal); // IE6-9
-	@include background-image(linear-gradient(left,  #2b4055 0%,#415366 50%,#2b4055 50%,#2b4055 100%));
+	@include background-image(linear-gradient(left,  #2b4055 0%, #415366 50%, #2b4055 50%, #2b4055 100%));
 	position: relative;
 	overflow: hidden;
 	
@@ -60,35 +70,32 @@ $maxWidth: 1350;
 	right: 0;
 }
 
-.visual {
-	text-align: center;
-	overflow: hidden;
-
-	& > span {
-		display: block;
-		width: 5000px;
-		margin-left: 0; /* -(width-container width)/2 */
-
-		& > img {
-			display: inline-block;
-		}
-	}
+#graffiti {
+	@include relativeWidth(1450, 500, true);
+	top: 65px;
 }
 
-#wall {
-	@include relativeWidth(1450, 650);
-	top: 150px;
+#bricks {
+	background: url(../img/background_wall_texture.png) center;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 #buddha {
-	@include relativeWidth(629, 200);
-	top: 210px;
-	
-	// left: 50%;
-	// margin: 0 auto;
+	top: 145px;
+	position: relative;
+	width: 629px;
+	margin: 0 auto;
+	max-width: 90%;
+	img {
+		max-width: 100%;
+	}
+}
 
-	// span {
-	// 	left: -50%;
-	// 	position: relative;
-	// }
+#spotlights {
+	@include relativeWidth(1919, false, true);
+	top: -250px;
 }
