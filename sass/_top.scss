@@ -1,0 +1,41 @@
+@import "compass";
+
+$maxWidth: 1350;
+
+@mixin width($width) {
+	width: ($width / $maxWidth) * 100 * 1%;
+}
+
+
+#top {
+	// needs latest Compass, add '@import "compass"' to your scss
+	background-color: #2b4055; // Old browsers
+	@include filter-gradient(#2b4055, #2b4055, horizontal); // IE6-9
+	@include background-image(linear-gradient(left,  #2b4055 0%,#415366 50%,#2b4055 50%,#2b4055 100%));
+	position: relative;
+	
+	.inner {
+		margin: 0 auto;
+		height: 858px;
+		width: 100%;
+		max-width: $maxWidth + 0px;
+		position: relative;
+	}
+}
+
+
+#shadow {
+	background: url(../img/clean/shadow.png) repeat-x bottom;
+	position: absolute;
+	height: 550px; width: 100%;
+	bottom: 0;
+	right: 0;
+}
+
+#wall {
+	@include width(1450);
+}
+
+#graffiti {
+	
+}
