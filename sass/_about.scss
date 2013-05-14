@@ -1,0 +1,27 @@
+#about {
+	background: #fff;
+	padding: 100px 0;
+	width: 100%;
+
+	position: relative;
+
+	.content {
+		margin: 0 auto;
+		max-width: 800px;
+		.inner {
+			padding: 0 50px;
+		}
+	}
+
+	.noise {
+		@include opacity(1);
+	}
+
+	#rfid-to-twitter {
+		@media only screen and (max-width: 967px) {
+			display: none;
+		}
+	}
+
+	h2 {margin-top: 0;}
+}

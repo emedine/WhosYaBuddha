@@ -8,7 +8,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title></title>
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width">
+		<!-- <meta name="viewport" content="width=device-width"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
@@ -54,22 +55,112 @@
 			
 			<div id="spotlight"></div>
 			
+			<h1>Smacking daily karma in ya face</h1>
+
+			<div class="noise"></div>
 		</section>
 
-		<section id="video"></section>
+		<section id="video">
+			<iframe src="http://player.vimeo.com/video/66169006?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" width="100%" height="100%" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+			<div class="noise"></div>
+		</section>
 
+		<section id="about">
+			<div class="content">
+				<div class="inner">
+					<div id="rfid-to-twitter" class="noise-container pull-right">
+						<img src="img/clean/twitter-on.png" alt="From RFID to Twitter">
+						<div class="noise"></div>
+					</div>
+					<h2>From thuglife to huglife</h2>
+					<p>
+						WhosYaBuddha turns physical love into daily digital karma. When 
+						visiting his hood, Rhinofly HQ in Utrecht, ya can rub his belly 
+						with a RFID-chip and he will smack some daily karma in ya face 
+						through Twitter. A great way to start the day. Dropping wisdom 
+						combined with some fresh rap slang or lyrics, that&rsquo;s how 
+						he rolls. From thuglife to huglife!
+					</p>
+			
+					<h3>Give it a try</h3>
+					<p>
+						So if you pay us a visit, take anything with a RFID-chip (for 
+						example an OV-chipkaart (dutch transportcard)) with you and we 
+						can scan it and connect it with your Twitter-account. If 
+						you&rsquo;re not nearby you can also drop Whosyabuddha a 
+						<a 
+							href="https://twitter.com/share"
+							data-count="none"
+							data-url="none"
+							data-text="Hey @TwitterBuddha, drop me some karma yawww!"
+							data-related="twitterbuddha"
+							data-hashtags="WhosYaBuddha"
+							class="twitter-share-button">
+							mention on the Twitters
+						</a> and he wil give you some daily karma.
+					</p>
+				</div>
+			</div>
+		</section>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<section id="tweets">
+			<div class="content">
+				<div class="inner">
+					<div class="col col1">
+						<div class="col-inner">
+							<div class="arrow-box-bottom tweet-one">
+								<div class="content">
+									<p>Do not m  "temptation was calling me, didn't know which way to go"</p>
+									<time>May 24, 2013 at 15.28</time>
+								</div>
+							</div>
+							<br><br><br>
+							<div class="arrow-box-top tweet-two">
+								<div class="content">
+									<p>Do not mistake temptation for opportunity. @chrisbrown has the same problem  "temptation was calling me, didn't know which way to go"</p>
+									<time>May 24, 2013 at 15.28</time>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col col2">
+						<div class="col-inner">
+							<div class="arrow-box-bottom tweet-three">
+								<div class="content">
+									<p>Do not mistake temptation for opportunity. @chrisbrown has the same problem  "temptation was calling me, didn't know which way to go"</p>
+									<time>May 24, 2013 at 15.28</time>
+								</div>
+							</div>
+							<br><br><br>
+							<div class="arrow-box-top tweet-four">
+								<div class="content">
+									<p>Do not mistake temptation for opportunity.  was calling me, didn't know which way to go"</p>
+									<time>May 24, 2013 at 15.28</time>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="tweet-holder"></div>
+			</div>
+
+			<div id="phone"></div>
+		</section>
+
+		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
 		<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 		<script src="js/plugins.js"></script>
-		<script src="js/main.js"></script>
+		<script src="js/main.js?v=3"></script>
 
 		<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 		<script>
-			var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-			(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-			g.src='//www.google-analytics.com/ga.js';
-			s.parentNode.insertBefore(g,s)}(document,'script'));
+			// var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+			// (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+			// g.src='//www.google-analytics.com/ga.js';
+			// s.parentNode.insertBefore(g,s)}(document,'script'));
 		</script>
+
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 	</body>
 </html>

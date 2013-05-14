@@ -1,5 +1,29 @@
 @import "normalize";
 @import "boilerplate-main";
 
+@import "typography";
+
 @import "top";
 @import "video";
+@import "about";
+@import "tweets";
+
+body, html {
+	position: relative;
+}
+
+.pointerevents {
+	.noise {
+		@include opacity(.35);
+		pointer-events:none;
+		background: url(../img/clean/noise_pattern.png);
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0; left: 0;
+	}
+
+	.noise-container {
+		position: relative;
+	}
+}

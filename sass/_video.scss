@@ -1,4 +1,9 @@
 #video {
+	position: relative;
 	background: #000;
-	height: 500px;
+	height: 440px;
+
+	.noise {
+		@include opacity(.7);
+	}
 }

@@ -1,0 +1,149 @@
+#tweets {
+	// needs latest Compass, add '@import "compass"' to your scss
+	background-color: #f2f2f2; // Old browsers
+	@include filter-gradient(#f2f2f2, #f2f2f2, horizontal); // IE6-9
+	@include background-image(linear-gradient(left, #f2f2f2 0%,#fafafa 50%,#f2f2f2 50%,#f2f2f2 100%));
+	
+	position: relative;
+	width: 100%;
+
+	// margin-top: -20px;
+
+	.content {
+		margin: 0 auto;
+		max-width: 800px;
+		.inner {
+			overflow: hidden;
+			padding: 0 50px;
+		}
+	}
+
+	.col {
+		width: 50%;
+		float: left;
+	}
+
+	.tweet-one {
+
+	}
+
+	.col1 {
+		.arrow-box-top, .arrow-box-bottom {
+			&:after { left: 85%; }
+			&:before { left: 85%; }
+		}
+
+		.col-inner {
+			padding-right: 75px;
+		}
+	}
+
+	.col2 {
+		.arrow-box-top, .arrow-box-bottom {
+			&:after { left: 15%; }
+			&:before { left: 15%; }
+		}
+
+		.col-inner {
+			padding-left: 75px;
+		}
+	}
+
+	.col-inner {
+		padding-top: 75px;
+		padding-bottom: 75px;
+	}
+
+	#phone {
+		background: url(../img/clean/phone.gif) no-repeat center;
+		width: 97px;
+		height: 174px;
+		position: absolute;
+		top: 50%; left: 50%;
+		margin-left: -(97px / 2);
+		margin-top: -(174px / 2);
+
+	}
+}
+
+
+
+$box-color: #ffffff;
+$border-color: #dddddd;
+
+.arrow-box-top, .arrow-box-bottom {
+	position: relative;
+	// top: 40px;
+	background: $box-color;
+	border: 4px solid $border-color;
+		
+	width: 100%;
+	.content {
+		padding: 20px;
+		font-size: 15px;
+		color: #777777;
+	}
+
+
+	&:after, &:before {
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	&:after {
+		border-color: rgba(136, 183, 213, 0);
+		border-width: 16px;
+		left: 50%;
+		margin-left: -16px;
+	}
+	&:before {
+		border-color: rgba(194, 225, 245, 0);
+		border-width: 22px;
+		left: 50%;
+		margin-left: -22px;
+	}
+}
+
+.arrow-box-bottom {
+	&:after, &:before {
+		top: 100%;
+	}
+
+	&:after {
+		border-top-color: $box-color;
+	}
+
+	&:before {
+		border-top-color: $border-color;
+	}
+}
+
+.arrow-box-top {
+	&:after, &:before {
+		bottom: 100%;
+	}
+
+	&:after {
+		border-bottom-color: $box-color;
+	}
+
+	&:before {
+		border-color: rgba(194, 225, 245, 0);
+		border-bottom-color: $border-color;
+	
+	}
+}
+
+.arrow-box-top, .arrow-box-bottom {
+	border-top: 0px; //1px solid #fff; // weird bugfix
+	border-left: 0;
+	border-right: 0;
+
+	&:before {
+		border-bottom-color: transparent;
+	}
+}

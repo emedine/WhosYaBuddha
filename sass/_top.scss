@@ -49,15 +49,21 @@ $maxWidth: 1350;
 	background-color: #2b4055; // Old browsers
 	@include filter-gradient(#2b4055, #2b4055, horizontal); // IE6-9
 	@include background-image(linear-gradient(left,  #2b4055 0%, #415366 50%, #2b4055 50%, #2b4055 100%));
-	position: relative;
+	position: fixed;
+	top: 0;
 	overflow: hidden;
-	
+	width: 100%;
+
 	.inner {
 		margin: 0 auto;
-		height: 670px;
+		// height: 670px;
 		width: 100%;
 		max-width: $maxWidth + 0px;
 		position: relative;
+	}
+
+	.noise {
+		@include opacity(.5);
 	}
 }
 
@@ -103,4 +109,13 @@ $maxWidth: 1350;
 #floor {
 	@include relativeWidth(1050 / $maxWidth, false, true);
 	position: absolute;
+}
+
+#grain {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(../img/grain.png);
 }
