@@ -5,10 +5,10 @@ $maxWidth: 1350;
 @mixin relativeWidth($width, $minWidth: false, $visualIsVeryWide: false) {
 	span {
 		display: inline-block;
-		width: ($width / $maxWidth) * 100 * 1%;
+		width: $width * 100 * 1%;
 		position: relative;
 		@if $visualIsVeryWide == true {
-			margin-left: -((($width / $maxWidth) * 100) - 100)/2 * 1%;
+			margin-left: -(($width * 100) - 100)/2 * 1%;
 		}
 		// @if $minWidth != false {min-width: $minWidth * 1px;}
 	}
@@ -54,7 +54,7 @@ $maxWidth: 1350;
 	
 	.inner {
 		margin: 0 auto;
-		height: 858px;
+		height: 670px;
 		width: 100%;
 		max-width: $maxWidth + 0px;
 		position: relative;
@@ -71,7 +71,7 @@ $maxWidth: 1350;
 }
 
 #graffiti {
-	@include relativeWidth(1450, 500, true);
+	@include relativeWidth(1450 / $maxWidth, 500, true);
 	top: 65px;
 }
 
@@ -96,6 +96,11 @@ $maxWidth: 1350;
 }
 
 #spotlights {
-	@include relativeWidth(1919, false, true);
-	top: -250px;
+	@include relativeWidth(1919 / $maxWidth, false, true);
+	bottom: 0;
+}
+
+#floor {
+	@include relativeWidth(1050 / $maxWidth, false, true);
+	position: absolute;
 }

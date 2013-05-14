@@ -782,7 +782,7 @@ textarea {
 }
 #top .inner {
   margin: 0 auto;
-  height: 858px;
+  height: 670px;
   width: 100%;
   max-width: 1350px;
   position: relative;
@@ -854,7 +854,7 @@ textarea {
   width: 100%;
   text-align: center;
   position: absolute;
-  top: -250px;
+  bottom: 0;
 }
 #spotlights span {
   display: inline-block;
@@ -863,6 +863,23 @@ textarea {
   margin-left: -21.07407%;
 }
 #spotlights img {
+  width: 100%;
+  display: inline-block;
+}
+
+#floor {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  position: absolute;
+}
+#floor span {
+  display: inline-block;
+  width: 77.77778%;
+  position: relative;
+  margin-left: 11.11111%;
+}
+#floor img {
   width: 100%;
   display: inline-block;
 }
