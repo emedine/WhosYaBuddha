@@ -1,32 +1,70 @@
+/*global jQuery, moment, Modernizr*/
 jQuery(function ($) {
 	var $window = $(window);
 	$window.resize(resizeVideo);
 
 	var $video = $('#video'),
+		$videoContainer = $('#video-container'),
 		$top = $('#top'),
 		VIDWIDTH = 1920,
 		VIDHEIGHT = 668,
-		SCALE = VIDHEIGHT / VIDWIDTH;
+		SCALE = VIDHEIGHT / VIDWIDTH,
+		TWITTER_ACCOUNT = 'IdleWorks';
 
 	function resizeVideo() {
+		$videoContainer.css({
+			height: SCALE * $window.width() + 'px'
+		});
 		$video.css({
-			height: SCALE * $window.width() + 'px',
-			marginTop: $top.height() + 'px'
+			marginTop: $top.outerHeight() + 'px'
 		});
 	}
-	resizeVideo();
+
+	var img = new Image();
+	img.onload = resizeVideo;
+	img.src = 'img/clean/buddha.png';
 
 
-	var $buddha = $('#buddha'), startTop = parseInt($buddha.css('top'), 10);
-	$window.on('scroll', function () {
-		$buddha.css({
-			top: (startTop - $window.scrollTop()/2) + 'px'
+	var $scrollElements = $('#buddha, #spotlights'),
+		startTop = parseInt($('#buddha').css('top'), 10) || 0,
+		scrollSpeed = 1.2;
+
+	if (!Modernizr.touch) {
+		if (Modernizr.csstransforms) {
+			$window.on('scroll', fancyScrollHandler);
+		} else {
+			$window.on('scroll', defaultScrollHandler);
+		}
+	}
+
+	function fancyScrollHandler() {
+		$scrollElements.css({
+			transform: 'translateY(' + (startTop - $window.scrollTop() / scrollSpeed) + 'px)'
 		});
+	}
+
+	function defaultScrollHandler() {
+		$scrollElements.css({
+			top: (startTop - $window.scrollTop() / scrollSpeed) + 'px'
+		});
+	}
+
+
+	$('h1').fitText(1.5, {
+		maxFontSize: 34
 	});
 
 
-	$('#tweet-holder').tweets({username: 'idleworks'}, function (data) {
-		console.log(data);
-		console.log('done');
+	$('#tweet-holder').tweets({username: TWITTER_ACCOUNT}, function (data) {
+		var $tweets = $('.tweet');
+
+		$.each(data, function (index) {
+			var $tweet = $tweets.eq(index),
+				date = moment(this.created_at);
+
+			$('p', $tweet).html(this.text);
+			$('a', $tweet).attr('href', 'http://www.twitter.com/' + TWITTER_ACCOUNT + '/status/' + this.id_str);
+			$('time', $tweet).attr('datetime', this.created_at).html(date.format('MMMM Do YYYY, h:mm'));
+		});
 	});
 });
