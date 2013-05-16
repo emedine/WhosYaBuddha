@@ -53,6 +53,10 @@ $maxWidth: 1350;
 	top: 0;
 	overflow: hidden;
 	width: 100%;
+	
+
+	padding-top: 50px;
+	// position: relative;
 
 	.inner {
 		margin: 0 auto;
@@ -74,6 +78,7 @@ $maxWidth: 1350;
 	height: 550px; width: 100%;
 	bottom: 0;
 	right: 0;
+	@include opacity(.7);
 }
 
 #graffiti {
@@ -91,24 +96,20 @@ $maxWidth: 1350;
 }
 
 #buddha {
-	top: 145px;
+	// top: 145px;
 	position: relative;
 	width: 629px;
 	margin: 0 auto;
 	max-width: 90%;
 	img {
 		max-width: 100%;
+		margin-bottom: -18%;
 	}
 }
 
 #spotlights {
 	@include relativeWidth(1919 / $maxWidth, false, true);
 	bottom: 0;
-}
-
-#floor {
-	@include relativeWidth(1050 / $maxWidth, false, true);
-	position: absolute;
 }
 
 #grain {
@@ -118,4 +119,35 @@ $maxWidth: 1350;
 	top: 0;
 	left: 0;
 	background: url(../img/grain.png);
+}
+
+#floor {
+	@include relativeWidth(1050 / $maxWidth, false, false);
+	position: absolute;
+	bottom: -65px;
+	margin: 0 auto;
+}
+
+#floorstuff {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	margin: 0 auto;
+	text-align: center;
+	margin-bottom: -5.6%;
+
+	@include relativeWidth(1050 / $maxWidth, 450, false);
+	
+	img {
+		width: 100%;
+		max-width: 1154px;
+	}
+}
+
+
+#turntable {
+	@include relativeWidth(358 / 1050, false, true);
+	position: absolute;
+	bottom: 234px;
+	left: 0;
 }

@@ -1,4 +1,7 @@
+* {
+}
 #tweets {
+	-webkit-transform: translate3d(0,0,0);
 	// needs latest Compass, add '@import "compass"' to your scss
 	background-color: #f2f2f2; // Old browsers
 	@include filter-gradient(#f2f2f2, #f2f2f2, horizontal); // IE6-9
@@ -23,8 +26,10 @@
 		float: left;
 	}
 
-	.tweet-one {
-
+	.arrow-box-top, .arrow-box-bottom {
+		&:first-child {
+			margin-bottom: 50px;
+		};
 	}
 
 	.col1 {
@@ -50,8 +55,8 @@
 	}
 
 	.col-inner {
-		padding-top: 75px;
-		padding-bottom: 75px;
+		padding-top: 45px;
+		padding-bottom: 45px;
 	}
 
 	#phone {
@@ -62,6 +67,55 @@
 		top: 50%; left: 50%;
 		margin-left: -(97px / 2);
 		margin-top: -(174px / 2);
+
+	}
+	
+	a {
+		&:hover {
+			text-decoration: underline;
+			time {color: #36b3e9;}
+		}
+	}
+
+	time {
+		font-size: 12px;
+		color: #bebdbd;
+	}
+
+	p {
+		margin: 0;
+	}
+
+
+	@media only screen and (max-width: 967px) {
+		br {display: none;}
+
+		.col1 {
+			margin-top: 100px;
+		}
+		
+		.col2 {
+			margin-top: 50px;
+			margin-bottom: 50px;
+		}
+
+		.col1, .col2 {
+			width: 100%;
+			
+			.col-inner {
+				padding: 0;
+			}
+
+			.arrow-box-top, .arrow-box-bottom {
+				&:after { left: 50%; }
+				&:before { left: 50%; }
+			}
+		}
+
+
+		#phone {
+			top: 0;
+		}
 
 	}
 }
@@ -108,21 +162,9 @@ $border-color: #dddddd;
 	}
 }
 
-.arrow-box-bottom {
-	&:after, &:before {
-		top: 100%;
-	}
 
-	&:after {
-		border-top-color: $box-color;
-	}
 
-	&:before {
-		border-top-color: $border-color;
-	}
-}
-
-.arrow-box-top {
+@mixin arrow-top {
 	&:after, &:before {
 		bottom: 100%;
 	}
@@ -136,6 +178,34 @@ $border-color: #dddddd;
 		border-bottom-color: $border-color;
 	
 	}
+}
+
+@mixin arrow-bottom {
+	&:after, &:before {
+		top: 100%;
+	}
+
+	&:after {
+		border-top-color: $box-color;
+	}
+
+	&:before {
+		border-top-color: $border-color;
+	}
+}
+
+.arrow-box-bottom {
+	@media only screen and (min-width: 967px) {
+		@include arrow-bottom;
+	}
+
+	@media only screen and (max-width: 967px) {
+		@include arrow-top;
+	}
+}
+
+.arrow-box-top {
+	@include arrow-top;
 }
 
 .arrow-box-top, .arrow-box-bottom {

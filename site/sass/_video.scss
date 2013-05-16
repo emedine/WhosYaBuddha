@@ -1,7 +1,10 @@
 #video {
 	position: relative;
 	background: #000;
-	height: 440px;
+
+	#video-container {
+		position: relative;
+	}
 
 	.noise {
 		@include opacity(.7);

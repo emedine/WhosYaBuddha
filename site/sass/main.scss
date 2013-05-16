@@ -1,16 +1,6 @@
+@import "compass";
 @import "normalize";
 @import "boilerplate-main";
-
-@import "typography";
-
-@import "top";
-@import "video";
-@import "about";
-@import "tweets";
-
-body, html {
-	position: relative;
-}
 
 .pointerevents {
 	.noise {
@@ -27,3 +17,16 @@ body, html {
 		position: relative;
 	}
 }
+
+@import "typography";
+
+@import "top";
+@import "video";
+@import "about";
+@import "tweets";
+@import "footer";
+
+body, html {
+	position: relative;
+}
+
