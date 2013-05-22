@@ -50,27 +50,31 @@ package controllers
 		{
 			_checkForOauthToken();
 			
-			var request:TwitterRequest
+			var request:TwitterRequest;
+			var complete:Function;
 			
-			if (_token)
+			if (_token && _token.oauthToken.length)
 			{
 				_twitter = new Twitter(consumerKey, consumerSecret, _token.oauthToken, _token.oauthTokenSecret);
 				request = _twitter.account_verifyCredentials();
-				request.addEventListener(TwitterRequestEvent.COMPLETE, _verifyCompleteHandler);
-				request.addEventListener(IOErrorEvent.IO_ERROR, _errorHandler);
-				request.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _errorHandler);
-				request.addEventListener(TwitterErrorEvent.CLIENT_ERROR, _errorHandler);
-				request.addEventListener(TwitterErrorEvent.SERVER_ERROR, _errorHandler);
+				complete = _verifyCompleteHandler;
 			} else
 			{
 				_twitter = new Twitter(consumerKey, consumerSecret);
 				request = _twitter.oauth_requestToken();
-				request.addEventListener(TwitterRequestEvent.COMPLETE, _tokenCompleteHandler);
-				request.addEventListener(IOErrorEvent.IO_ERROR, _errorHandler);
-				request.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _errorHandler);
-				request.addEventListener(TwitterErrorEvent.CLIENT_ERROR, _errorHandler);
-				request.addEventListener(TwitterErrorEvent.SERVER_ERROR, _errorHandler);
+				complete = _tokenCompleteHandler;
 			}
+			
+			_setHandlersForRequest(request, complete);
+		}
+		
+		private function _setHandlersForRequest(request:TwitterRequest, completeHandler:Function):void
+		{
+			request.addEventListener(TwitterRequestEvent.COMPLETE, completeHandler);
+			request.addEventListener(IOErrorEvent.IO_ERROR, _errorHandler);
+			request.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _errorHandler);
+			request.addEventListener(TwitterErrorEvent.CLIENT_ERROR, _errorHandler);
+			request.addEventListener(TwitterErrorEvent.SERVER_ERROR, _errorHandler);
 		}
 		
 		private function _verifyCompleteHandler(event:TwitterRequestEvent):void
@@ -147,21 +151,34 @@ package controllers
 		
 		public function tweet(message:String):void
 		{
+			LogController.log("Tweet: " + message);
+			
 			var request:TwitterRequest = _twitter.statuses_update(message);
-			request.addEventListener(IOErrorEvent.IO_ERROR, _errorHandler);
-			request.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _errorHandler);
-			request.addEventListener(TwitterErrorEvent.CLIENT_ERROR, _errorHandler);
-			request.addEventListener(TwitterErrorEvent.SERVER_ERROR, _errorHandler);
+			_setHandlersForRequest(request, _tweetCompleteHandler);
+		}
+		
+		private function _tweetCompleteHandler(event:TwitterRequestEvent):void
+		{
+			LogController.log("tweet send")
 		}
 		
 		private function _errorHandler(event:Event):void
 		{
-			trace(event.type);
+			LogController.log(event.type);
 			
 			if (event is TwitterErrorEvent)
 			{
-				trace(TwitterErrorEvent(event).statusCode);
+				LogController.log(TwitterErrorEvent(event).statusCode.toString());
 			}
+			
+			//_reset();
+			//_init();
+		}
+		
+		private function _reset():void
+		{
+			_token = new TwitterTokenSet("", "", "", "");
+			_saveOauthToken();
 		}
 		
 		public function destroy():void

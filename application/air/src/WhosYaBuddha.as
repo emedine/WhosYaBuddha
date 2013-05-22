@@ -11,6 +11,7 @@ package
 	
 	import controllers.ArduinoController;
 	import controllers.CalendarController;
+	import controllers.LogController;
 	import controllers.SpeechController;
 	import controllers.TweetDBController;
 	import controllers.TwitterController;
@@ -25,6 +26,7 @@ package
 	{
 		private var _timer:Timer;
 		
+		private var _log:LogController;
 		private var _rfid:ArduinoController;
 		private var _db:UserDBController;
 		private var _message:TweetDBController;
@@ -33,7 +35,6 @@ package
 		private var _speech:SpeechController;
 		
 		private var _background:BackgroundAsset;
-		private var _text:TextField;
 		
 		public function WhosYaBuddha()
 		{
@@ -49,7 +50,6 @@ package
 			_initSpeech();
 		}
 		
-		
 		private function _initBackground():void
 		{
 			_background = new BackgroundAsset();
@@ -58,13 +58,16 @@ package
 		
 		private function _initText():void
 		{
-			_text = new TextField();
-			_text.multiline = _text.multiline = true;
-			_text.width = 500;
-			_text.height = stage.stageHeight;
-			_text.defaultTextFormat = new TextFormat("Sans", 20, 0xF5F5F5);
-			_text.text = "init";
-			addChild(_text);
+			var text:TextField = new TextField();
+			text.multiline = text.multiline = true;
+			text.width = 500;
+			text.height = stage.stageHeight;
+			text.defaultTextFormat = new TextFormat("Sans", 20, 0xF5F5F5);
+			addChild(text);
+			
+			_log = LogController.instance;
+			_log.init(text);
+			_log.log("init");
 		}
 		
 		private function _initRFID():void
@@ -78,12 +81,12 @@ package
 		{
 			_rfid.removeEventListener(Event.COMPLETE, _rfidCompleteHandler);
 			
-			_text.appendText("\nrfid ready");
+			_log.log("rfid ready");
 		}
 		
 		private function _rfidFoundHandler(event:ArduinoControllerEvent):void
 		{
-			_text.appendText("\nrfid: " + event.rfid);
+			_log.log("rfid: " + event.rfid);
 			_db.getUserByRFID(event.rfid);
 		}
 		
@@ -98,7 +101,7 @@ package
 		{
 			_db.removeEventListener(Event.COMPLETE, _dbCompleteHandler);
 			
-			_text.appendText("\nuser db ready");
+			_log.log("user db ready");
 		}
 		
 		private function _dbHandler(event:UserDBControllerEvent):void
@@ -128,7 +131,7 @@ package
 		{
 			_message.removeEventListener(Event.COMPLETE, _messageCompleteHandler);
 			
-			_text.appendText("\ntweet db ready");
+			_log.log("tweet db ready");
 		}
 		
 		private function _initCalender():void
@@ -141,12 +144,12 @@ package
 		private function _calenderCompletehandler(event:Event):void
 		{
 			_calendar.removeEventListener(Event.COMPLETE, _calenderCompletehandler);
-			_text.appendText("\ncalendar ready");
+			_log.log("calendar ready");
 		}
 		
 		private function _gotEventHandler(event:CalendarControllerEvent):void
 		{
-			_text.appendText("\ngot calender event: " + event.model.title);
+			_log.log("got calender event: " + event.model.title);
 			
 			_createTweet(event.model);
 		}
@@ -161,7 +164,7 @@ package
 		{
 			_twitter.removeEventListener(Event.COMPLETE, _tweetCompleteHandler);
 			
-			_text.appendText("\ntwitter ready");
+			_log.log("twitter ready");
 		}
 		
 		private function _initSpeech():void
@@ -173,7 +176,7 @@ package
 		{
 			var message:String = _message.generate(model);
 			
-			_text.appendText("\ntweet: " + message);
+			_log.log("tweet: " + message);
 			
 			_twitter.tweet(message);
 			_speech.say(message);

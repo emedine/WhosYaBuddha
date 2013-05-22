@@ -6,6 +6,7 @@ package controllers
 	import com.adobe.protocols.oauth2.event.RefreshAccessTokenEvent;
 	import com.adobe.protocols.oauth2.grant.AuthorizationCodeGrant;
 	import com.adobe.protocols.oauth2.grant.IGrantType;
+	import com.adobe.utils.DateUtil;
 	
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -47,8 +48,8 @@ package controllers
 		
 		private var _accesToken:String;
 		private var _refreshToken:String;
-		private var _expireToken:int;
-		private var _tokenCreationDate:int;
+		private var _tokenExpiresIn:int;
+		private var _tokenCreationDate:Number;
 		
 		private var _destroyed:Boolean;
 		
@@ -74,7 +75,7 @@ package controllers
 						
 			if (_accesToken && _accesToken.length)
 			{
-				if (_checkTokenExpiration(_tokenCreationDate))
+				if (_checkTokenExpiration())
 				{
 					oauth2.addEventListener(RefreshAccessTokenEvent.TYPE, _refreshTokenHandler);
 					oauth2.refreshAccessToken(_refreshToken, clientID, clientSecret);
@@ -112,7 +113,7 @@ package controllers
 		{
 			_accesToken = event.accessToken;
 			_refreshToken = event.refreshToken;
-			_expireToken = event.expiresIn;
+			_tokenExpiresIn = event.expiresIn;
 			_tokenCreationDate = new Date().getTime();
 			
 			_saveOauthToken();
@@ -126,21 +127,28 @@ package controllers
 			urlLoader.addEventListener(Event.COMPLETE, _completeHandler);
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, _errorHandler);
 			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _errorHandler);
-			urlLoader.load(new URLRequest(calenderURL + "?key=" + apiKey + "&access_token=" + _accesToken));
+			urlLoader.load(new URLRequest(calenderURL + "?key=" + apiKey + "&access_token=" + _accesToken + "&timeMin=" + DateUtil.toW3CDTF(new Date()).toString()));
 		}
 		
 		private function _errorHandler(event:Event):void
 		{
-			trace(event.type);
-			trace(event["text"]);
+			LogController.log(event.type);
+			LogController.log(event["text"]);
+			
+			_reset();
+			_init();
 		}
 		
 		private function _completeHandler(event:Event):void 
 		{
 			_parseEventData(event.currentTarget.data);
 			
-			_eventChecker = new Timer(60000, 0);
-			_eventChecker.addEventListener(TimerEvent.TIMER, _checkEventsHandler);
+			if (!_eventChecker)
+			{
+				_eventChecker = new Timer(60000, 0);
+				_eventChecker.addEventListener(TimerEvent.TIMER, _checkEventsHandler);
+			}
+			
 			_eventChecker.start();
 			
 			dispatchEvent(event);
@@ -148,8 +156,15 @@ package controllers
 		
 		private function _checkEventsHandler(event:TimerEvent):void
 		{
-			var model:CalendarEventModel;
+			if (_checkTokenExpiration())
+			{
+				_eventChecker.stop();
+				_init();
+				return;
+			}
+				
 			var time:Number = new Date().getTime();
+			var model:CalendarEventModel;
 			
 			for each(model in _events) 
 			{
@@ -171,9 +186,12 @@ package controllers
 			_events = new Vector.<CalendarEventModel>;
 			var model:CalendarEventModel;
 			
+			LogController.log("Amount calender items: " + data.items.length);
+			
 			for (var i:int = 0; i < data.items.length; i++) 
 			{
 				model = new CalendarEventModel(data.items[i]);
+				LogController.log("item date: " + model.date)
 				_events.push(model);
 			}
 		}
@@ -206,14 +224,11 @@ package controllers
 				
 				_accesToken = data.accesToken;
 				_refreshToken = data.refreshToken;
-				_expireToken = data.expireToken;
+				_tokenExpiresIn = data.expireToken;
 				_tokenCreationDate = data.tokenCreationDate;
 			} else
 			{
-				_accesToken = "";
-				_refreshToken = "";
-				_expireToken = 0;
-				_tokenCreationDate = 0;
+				_reset();
 			}
 		}
 		
@@ -222,15 +237,24 @@ package controllers
 			var file:File = File.applicationStorageDirectory.resolvePath(tokenFileName);
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.WRITE);
-			fileStream.writeObject({accesToken: _accesToken, refreshToken: _refreshToken, expireToken: _expireToken, tokenCreationDate: _tokenCreationDate});
+			fileStream.writeObject({accesToken: _accesToken, refreshToken: _refreshToken, expireToken: _tokenExpiresIn, tokenCreationDate: _tokenCreationDate});
 			fileStream.close();
 		}
 		
-		// returns true if the token is expired.
-		private function _checkTokenExpiration(time:int):Boolean
+		private function _reset():void
 		{
-			 var difference:int = new Date().getTime() - time;
-			 return (difference / 1000) >= _expireToken;
+			_accesToken = "";
+			_refreshToken = "";
+			_tokenExpiresIn = 0;
+			_tokenCreationDate = 0;
+			
+			_saveOauthToken();
+		}
+		
+		// returns true if the token is expired.
+		private function _checkTokenExpiration():Boolean
+		{
+			 return ((_tokenCreationDate - new Date().getTime()) / 1000) >= _tokenExpiresIn;
 		}
 		
 		public function get destroyed():Boolean
