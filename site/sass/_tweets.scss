@@ -4,8 +4,8 @@
 	-webkit-transform: translate3d(0,0,0);
 	// needs latest Compass, add '@import "compass"' to your scss
 	background-color: #f2f2f2; // Old browsers
-	@include filter-gradient(#f2f2f2, #f2f2f2, horizontal); // IE6-9
-	@include background-image(linear-gradient(left, #f2f2f2 0%,#fafafa 50%,#f2f2f2 50%,#f2f2f2 100%));
+	// @include filter-gradient(#f2f2f2, #f2f2f2, horizontal); // IE6-9
+	// @include background-image(linear-gradient(left, #f2f2f2 0%,#fcfcfc 50%,#f2f2f2 50%,#f2f2f2 100%));
 	
 	position: relative;
 	width: 100%;
@@ -85,8 +85,7 @@
 	p {
 		margin: 0;
 	}
-
-
+	
 	@media only screen and (max-width: 967px) {
 		br {display: none;}
 

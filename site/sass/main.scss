@@ -30,3 +30,11 @@ body, html {
 	position: relative;
 }
 
+
+.glare {
+	position: absolute;
+	background: url(../img/clean/gradient-60.png) right repeat-y;
+	width: 50%;
+	height: 100%;
+	top: 0; left: 0;
+}

@@ -55,7 +55,7 @@ $maxWidth: 1350;
 	width: 100%;
 	
 
-	padding-top: 50px;
+	padding-top: 90px;
 	// position: relative;
 
 	.inner {
@@ -83,7 +83,7 @@ $maxWidth: 1350;
 
 #graffiti {
 	@include relativeWidth(1450 / $maxWidth, 500, true);
-	top: 65px;
+	top: -70px;
 }
 
 #bricks {
