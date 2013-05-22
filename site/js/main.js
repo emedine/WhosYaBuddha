@@ -7,13 +7,14 @@ jQuery(function ($) {
 		$videoContainer = $('#video-container'),
 		$top = $('#top'),
 		VIDWIDTH = 1920,
-		VIDHEIGHT = 668,
+		VIDHEIGHT = 1080,
+		VIDHEIGHT_MAX = 600,
 		SCALE = VIDHEIGHT / VIDWIDTH,
-		TWITTER_ACCOUNT = 'IdleWorks';
+		TWITTER_ACCOUNT = 'whosyabuddha';
 
 	function resizeVideo() {
 		$videoContainer.css({
-			height: SCALE * $window.width() + 'px'
+			height: Math.min(SCALE * $window.width(), VIDHEIGHT_MAX) + 'px'
 		});
 		$video.css({
 			marginTop: $top.outerHeight() + 'px'
