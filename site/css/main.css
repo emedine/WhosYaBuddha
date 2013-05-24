@@ -975,7 +975,7 @@ img.pull-right {
   bottom: 0;
   margin: 0 auto;
   text-align: center;
-  margin-bottom: -5.6%;
+  margin-bottom: -6.5%;
   width: 100%;
   text-align: center;
   position: absolute;
@@ -1066,6 +1066,9 @@ img.pull-right {
 }
 #about h2 {
   margin-top: 0;
+}
+#about .fb-like {
+  margin-bottom: 15px;
 }
 
 #tweets {

@@ -51,7 +51,7 @@ jQuery(function ($) {
 	}
 
 
-	$('h1').fitText(1.5, {
+	$('h1').fitText(1.8, {
 		maxFontSize: 34
 	});
 
