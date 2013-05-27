@@ -12,13 +12,14 @@ package
 	import controllers.ArduinoController;
 	import controllers.CalendarController;
 	import controllers.LogController;
-	import controllers.SpeechController;
+	import controllers.SoundFXController;
 	import controllers.TweetDBController;
 	import controllers.TwitterController;
 	import controllers.UserDBController;
 	
 	import events.ArduinoControllerEvent;
 	import events.CalendarControllerEvent;
+	import events.TwitterControllerEvent;
 	import events.UserDBControllerEvent;
 	
 	[SWF(width="1280", height="720")]
@@ -32,7 +33,7 @@ package
 		private var _message:TweetDBController;
 		private var _calendar:CalendarController;
 		private var _twitter:TwitterController;
-		private var _speech:SpeechController;
+		private var _sound:SoundFXController;
 		
 		private var _background:BackgroundAsset;
 		
@@ -42,12 +43,12 @@ package
 			
 			_initBackground();
 			_initText();
-			_initRFID();
+			//_initRFID();
 			_initDatabase();
 			_initMessage();
 			_initCalender()
 			_initTwitter();
-			_initSpeech();
+			_initSound();
 		}
 		
 		private function _initBackground():void
@@ -59,8 +60,8 @@ package
 		private function _initText():void
 		{
 			var text:TextField = new TextField();
-			text.multiline = text.multiline = true;
-			text.width = 500;
+			text.multiline = text.wordWrap = true;
+			text.width = stage.stageWidth;
 			text.height = stage.stageHeight;
 			text.defaultTextFormat = new TextFormat("Sans", 20, 0xF5F5F5);
 			addChild(text);
@@ -115,7 +116,7 @@ package
 				}
 				case UserDBControllerEvent.NO_USER_FOUND:
 				{
-					_createTweet();
+					_createTweet(event.user);
 					break;
 				}
 			}
@@ -158,6 +159,12 @@ package
 		{
 			_twitter = new TwitterController(stage);
 			_twitter.addEventListener(Event.COMPLETE, _tweetCompleteHandler);
+			_twitter.addEventListener(TwitterControllerEvent.GOT_MENTION, _mentionHandler);
+		}
+		
+		private function _mentionHandler(event:TwitterControllerEvent):void
+		{
+			_createTweet(event.data);
 		}
 		
 		private function _tweetCompleteHandler(event:Event):void
@@ -167,29 +174,32 @@ package
 			_log.log("twitter ready");
 		}
 		
-		private function _initSpeech():void
+		private function _initSound():void
 		{
-			_speech = new SpeechController();
+			_sound = new SoundFXController();
 		}
 		
-		private function _createTweet(model:Object = null):void
+		private function _createTweet(model:* = null):void
 		{
 			var message:String = _message.generate(model);
 			
 			_log.log("tweet: " + message);
 			
 			_twitter.tweet(message);
-			_speech.say(message);
+			_sound.play();
 		}
 		
 		private function _exitHandler(event:Event):void
 		{
 			NativeApplication.nativeApplication.removeEventListener(Event.EXITING, _exitHandler);
 			
-			_rfid.destroy();
-			_rfid.removeEventListener(Event.COMPLETE, _rfidCompleteHandler);
-			_rfid.removeEventListener(ArduinoControllerEvent.RFID_FOUND, _rfidFoundHandler);
-			_rfid = null;
+			if (_rfid)
+			{
+				_rfid.destroy();
+				_rfid.removeEventListener(Event.COMPLETE, _rfidCompleteHandler);
+				_rfid.removeEventListener(ArduinoControllerEvent.RFID_FOUND, _rfidFoundHandler);
+				_rfid = null;
+			}
 			
 			_db.destroy();
 			_db.removeEventListener(Event.COMPLETE, _dbCompleteHandler);
@@ -203,8 +213,8 @@ package
 			_twitter.removeEventListener(Event.COMPLETE, _tweetCompleteHandler);
 			_twitter = null;
 			
-			_speech.destroy();
-			_speech = null;
+			_sound.destroy();
+			_sound = null;
 		}
 	}
 }

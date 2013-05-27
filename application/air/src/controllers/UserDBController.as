@@ -80,6 +80,8 @@ package controllers
 			} else
 			{
 				e = new UserDBControllerEvent(UserDBControllerEvent.NO_USER_FOUND);
+				e.user = new UserModel();
+				e.user.twittername = "Howdy stranger";
 			}
 			
 			dispatchEvent(e);

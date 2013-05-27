@@ -41,6 +41,15 @@ package models
 			{
 				var start:Object = data["start"];
 				date = DateUtil.parseW3CDTF(start["dateTime"]);
+				
+				if (title == "Daily Karma")
+				{
+					var hour:int = date.hours;
+					var minutes:int = date.minutes;
+					date = new Date();
+					date.hours = hour;
+					date.minutes = minutes;
+				}
 			}
 			
 			dispatchEvent(new Event(Event.COMPLETE));

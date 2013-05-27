@@ -6,14 +6,19 @@ package controllers
 	import flash.events.IOErrorEvent;
 	import flash.events.LocationChangeEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.geom.Rectangle;
 	import flash.media.StageWebView;
 	import flash.net.URLRequest;
+	import flash.utils.Timer;
+	import flash.utils.setTimeout;
 	
 	import assets.Configuration;
+	
+	import events.TwitterControllerEvent;
 	
 	import isle.susisu.twitter.Twitter;
 	import isle.susisu.twitter.TwitterRequest;
@@ -21,12 +26,14 @@ package controllers
 	import isle.susisu.twitter.events.TwitterErrorEvent;
 	import isle.susisu.twitter.events.TwitterRequestEvent;
 	
+	import models.MentionModel;
+	
 	import oak.interfaces.IDestroyable;
 	
 	[Event(name="complete", type="flash.events.Event")]
 	public class TwitterController extends EventDispatcher implements IDestroyable
 	{
-		private const tokenFileName:String = "twitter_token.file";
+		private const fileName:String = "twitter.file";
 		
 		private const consumerKey:String = Configuration.TWITTER_CONSUMER_KEY;
 		private const consumerSecret:String = Configuration.TWITTER_CONSUMER_SECRET;
@@ -39,6 +46,10 @@ package controllers
 		private var _stage:Stage;
 		private var _webView:StageWebView;
 		
+		private var _mentionedSinceID:String;
+		private var _mentions:Vector.<MentionModel>;
+		private var _mentionChecker:Timer;
+		
 		public function TwitterController(stage:Stage)
 		{
 			_stage = stage;
@@ -48,7 +59,7 @@ package controllers
 		
 		private function _init():void
 		{
-			_checkForOauthToken();
+			_checkForSettings();
 			
 			var request:TwitterRequest;
 			var complete:Function;
@@ -80,6 +91,18 @@ package controllers
 		private function _verifyCompleteHandler(event:TwitterRequestEvent):void
 		{
 			dispatchEvent(new Event(Event.COMPLETE));
+			
+			// check every ten minutes
+			_mentionChecker = new Timer(600000, 0);
+			_mentionChecker.addEventListener(TimerEvent.TIMER, _checkMentionsHandler);
+			_mentionChecker.start();
+			
+			_checkMentions();
+		}
+		
+		private function _checkMentionsHandler(event:TimerEvent):void
+		{
+			_checkMentions();
 		}
 		
 		private function _tokenCompleteHandler(event:TwitterRequestEvent):void
@@ -100,6 +123,12 @@ package controllers
 			
 			_webView.loadURL("javascript:document.title=document.documentElement.innerHTML;");
 			
+			// when running on windows, the webview title trick will be avaiable next frame.
+			setTimeout(_extractPin, 16);
+		}
+		
+		private function _extractPin():void
+		{
 			var pin:String = String(_webView.title.split('process:</span> <kbd aria-labelledby="code-desc"><code>')[1]).split("<")[0];
 			
 			if (pin.length)
@@ -117,35 +146,36 @@ package controllers
 		{
 			var request:TwitterRequest = event.currentTarget as TwitterRequest;
 			_token = _twitter.accessTokenSet;
-			_saveOauthToken();
+			_saveSettings();
 			
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
-		private function _checkForOauthToken():void
+		private function _checkForSettings():void
 		{
-			var file:File = File.applicationStorageDirectory.resolvePath(tokenFileName);
+			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
 			var fileStream:FileStream = new FileStream();
 			
 			if(file.exists)
 			{
 				fileStream.open(file, FileMode.READ);
-				var obj:Object = fileStream.readObject() as Object;
+				var data:Object = fileStream.readObject() as Object;
 				fileStream.close();
 				
-				_token = new TwitterTokenSet(consumerKey, consumerSecret, obj.oauthToken, obj.oauthTokenSecret);
+				_token = new TwitterTokenSet(consumerKey, consumerSecret, data.oauthToken, data.oauthTokenSecret);
+				_mentionedSinceID = data.mentionedSinceID;
 			} else
 			{
 				_token = null
 			}
 		}
 		
-		private function _saveOauthToken():void
+		private function _saveSettings():void
 		{
-			var file:File = File.applicationStorageDirectory.resolvePath(tokenFileName);
+			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.WRITE);
-			fileStream.writeObject({oauthToken: _token.oauthToken, oauthTokenSecret: _token.oauthTokenSecret});
+			fileStream.writeObject({oauthToken: _token.oauthToken, oauthTokenSecret: _token.oauthTokenSecret, mentionedSinceID: _mentionedSinceID});
 			fileStream.close();
 		}
 		
@@ -155,6 +185,43 @@ package controllers
 			
 			var request:TwitterRequest = _twitter.statuses_update(message);
 			_setHandlersForRequest(request, _tweetCompleteHandler);
+		}
+		
+		private function _checkMentions():void
+		{
+			LogController.log("check mentions");
+			
+			var request:TwitterRequest = _twitter.statuses_mentionsTimeline(20, _mentionedSinceID);
+			_setHandlersForRequest(request, _mentionsCompleteHandler)
+		}
+		
+		private function _mentionsCompleteHandler(event:TwitterRequestEvent):void
+		{
+			_mentions = new Vector.<MentionModel>;
+			
+			var request:TwitterRequest = event.currentTarget as TwitterRequest;
+			var mentions:Array = JSON.parse(request.response as String) as Array;
+			var mention:MentionModel;
+			var e:TwitterControllerEvent;
+			
+			for (var i:int = 0; i < mentions.length; i++) 
+			{
+				mention = new MentionModel(mentions[i]);
+				_mentions.push(mention);
+				
+				LogController.log("Buddha got mention from: " + mention.screenName);
+				
+				e = new TwitterControllerEvent(TwitterControllerEvent.GOT_MENTION);
+				e.data = mention;
+				
+				dispatchEvent(e);
+			}
+			
+			if (_mentions.length)
+			{
+				_mentionedSinceID = MentionModel(_mentions[0]).id;
+				_saveSettings();
+			}
 		}
 		
 		private function _tweetCompleteHandler(event:TwitterRequestEvent):void
@@ -178,7 +245,7 @@ package controllers
 		private function _reset():void
 		{
 			_token = new TwitterTokenSet("", "", "", "");
-			_saveOauthToken();
+			_saveSettings();
 		}
 		
 		public function destroy():void

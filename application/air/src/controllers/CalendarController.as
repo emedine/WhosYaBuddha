@@ -114,7 +114,7 @@ package controllers
 			_accesToken = event.accessToken;
 			_refreshToken = event.refreshToken;
 			_tokenExpiresIn = event.expiresIn;
-			_tokenCreationDate = new Date().getTime();
+			_tokenCreationDate = new Date().time;
 			
 			_saveOauthToken();
 			
@@ -145,7 +145,8 @@ package controllers
 			
 			if (!_eventChecker)
 			{
-				_eventChecker = new Timer(60000, 0);
+				// check every half hour
+				_eventChecker = new Timer(1800000, 0);
 				_eventChecker.addEventListener(TimerEvent.TIMER, _checkEventsHandler);
 			}
 			
@@ -163,12 +164,12 @@ package controllers
 				return;
 			}
 				
-			var time:Number = new Date().getTime();
+			var time:Number = new Date().time;
 			var model:CalendarEventModel;
 			
 			for each(model in _events) 
 			{
-				if ((model.date.getTime() - time) <= 0)
+				if ((model.date.time - time) <= 0)
 				{
 					_events.splice(_events.indexOf(model), 1);
 					
@@ -181,18 +182,24 @@ package controllers
 		
 		private function _parseEventData(value:String):void
 		{
-			var data:Object = JSON.parse(value);
-			
 			_events = new Vector.<CalendarEventModel>;
+			
+			var data:Object = JSON.parse(value);
 			var model:CalendarEventModel;
+			var time:Number = new Date().time;
 			
 			LogController.log("Amount calender items: " + data.items.length);
 			
 			for (var i:int = 0; i < data.items.length; i++) 
 			{
 				model = new CalendarEventModel(data.items[i]);
-				LogController.log("item date: " + model.date)
-				_events.push(model);
+				
+				if (model.date.time - time >= 0)
+				{
+					LogController.log(model.title + " - " + model.date);
+					
+					_events.push(model);
+				}
 			}
 		}
 		
@@ -254,7 +261,7 @@ package controllers
 		// returns true if the token is expired.
 		private function _checkTokenExpiration():Boolean
 		{
-			 return ((_tokenCreationDate - new Date().getTime()) / 1000) >= _tokenExpiresIn;
+			 return ((_tokenCreationDate - new Date().time) / 1000) >= _tokenExpiresIn;
 		}
 		
 		public function get destroyed():Boolean

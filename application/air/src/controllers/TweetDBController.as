@@ -12,6 +12,7 @@ package controllers
 	import avmplus.getQualifiedClassName;
 	
 	import models.CalendarEventModel;
+	import models.MentionModel;
 	import models.TweetModel;
 	import models.UserModel;
 	
@@ -113,13 +114,19 @@ package controllers
 						tweet.message = "@" + UserModel(model).twittername + " " + tweet.message;
 						break;
 					}
+					case getQualifiedClassName(MentionModel):
+					{
+						tweet = _userTweets[Random.integer(0, _userTweets.length - 1)];
+						tweet.message = "@" + MentionModel(model).screenName + " " + tweet.message;
+						break;
+					}
 					case getQualifiedClassName(CalendarEventModel):
 					{
 						tweet = new TweetModel();
 						
 						var event:CalendarEventModel = CalendarEventModel(model);
 						
-						if (event.description.length)
+						if (event && event.description && event.description.length)
 						{
 							tweet.message = event.description;
 						} else
