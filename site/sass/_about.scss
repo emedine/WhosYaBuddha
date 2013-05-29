@@ -28,6 +28,18 @@
 	h2 {margin-top: 0;}
 
 	.fb-like {
-		margin-bottom: 15px;
+		margin-top: 5px;
+	}
+
+	.fb_iframe_widget {
+		display: block;
+
+		span {
+			height: auto !important;
+		}
+
+		iframe {
+			position: static;
+		}
 	}
 }

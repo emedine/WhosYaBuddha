@@ -1068,7 +1068,16 @@ img.pull-right {
   margin-top: 0;
 }
 #about .fb-like {
-  margin-bottom: 15px;
+  margin-top: 5px;
+}
+#about .fb_iframe_widget {
+  display: block;
+}
+#about .fb_iframe_widget span {
+  height: auto !important;
+}
+#about .fb_iframe_widget iframe {
+  position: static;
 }
 
 #tweets {
