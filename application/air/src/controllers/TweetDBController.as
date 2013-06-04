@@ -103,6 +103,7 @@ package controllers
 		public function generate(model:Object = null):String
 		{
 			var tweet:TweetModel;
+			var message:String;
 			
 			if (model)
 			{
@@ -111,13 +112,13 @@ package controllers
 					case getQualifiedClassName(UserModel):
 					{
 						tweet = _userTweets[Random.integer(0, _userTweets.length - 1)];
-						tweet.message = "@" + UserModel(model).twittername + " " + tweet.message;
+						message = "@" + UserModel(model).twittername + " " + tweet.message;
 						break;
 					}
 					case getQualifiedClassName(MentionModel):
 					{
 						tweet = _userTweets[Random.integer(0, _userTweets.length - 1)];
-						tweet.message = "@" + MentionModel(model).screenName + " " + tweet.message;
+						message = "@" + MentionModel(model).screenName + " " + tweet.message;
 						break;
 					}
 					case getQualifiedClassName(CalendarEventModel):
@@ -128,20 +129,20 @@ package controllers
 						
 						if (event && event.description && event.description.length)
 						{
-							tweet.message = event.description;
+							message = event.description;
 						} else
 						{
-							_buddhaTweets[Random.integer(0, _buddhaTweets.length - 1)];
+							message = _buddhaTweets[Random.integer(0, _buddhaTweets.length - 1)].message;
 						}
 						break;
 					}
 				}
 			} else
 			{
-				tweet = _buddhaTweets[Random.integer(0, _buddhaTweets.length - 1)];
+				message = _buddhaTweets[Random.integer(0, _buddhaTweets.length - 1)].message;
 			}
 			
-			return tweet.message;
+			return message;
 		}
 		
 		public function destroy():void
