@@ -44,7 +44,9 @@ package controllers
 		{
 			if (_destroyed) return;
 			
+			_connector.removeEventListener("socketData", _socketDataHandler);
 			_connector.dispose();
+			_connector = null;
 		}
 		
 		public function get destroyed():Boolean

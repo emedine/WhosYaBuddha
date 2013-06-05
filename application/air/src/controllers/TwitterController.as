@@ -237,9 +237,6 @@ package controllers
 			{
 				LogController.log(TwitterErrorEvent(event).statusCode.toString());
 			}
-			
-			//_reset();
-			//_init();
 		}
 		
 		private function _reset():void
@@ -255,12 +252,20 @@ package controllers
 			_stage = null;
 			_twitter = null;
 			_token = null;
+			_mentions = null;
 			
 			if (_webView)
 			{
 				_webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGE, _locationChangeHandler);
 				_webView.dispose();
 				_webView = null;
+			}
+			
+			if (_mentionChecker)
+			{
+				_mentionChecker.removeEventListener(TimerEvent.TIMER, _checkMentionsHandler);
+				_mentionChecker.stop();
+				_mentionChecker = null;
 			}
 			
 			_destroyed = true;

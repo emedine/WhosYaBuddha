@@ -5,7 +5,6 @@ package
 	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.utils.Timer;
 	
 	import assets.BackgroundAsset;
 	
@@ -25,8 +24,6 @@ package
 	[SWF(width="1280", height="720")]
 	public class WhosYaBuddha extends Sprite
 	{
-		private var _timer:Timer;
-		
 		private var _log:LogController;
 		private var _rfid:ArduinoController;
 		private var _db:UserDBController;
@@ -43,7 +40,7 @@ package
 			
 			_initBackground();
 			_initText();
-			//_initRFID();
+			_initRFID();
 			_initDatabase();
 			_initMessage();
 			_initCalender()
@@ -201,6 +198,13 @@ package
 				_rfid = null;
 			}
 			
+			_log.destroy();
+			_log = null;
+			
+			_calendar.removeEventListener(Event.COMPLETE, _calenderCompletehandler);
+			_calendar.removeEventListener(CalendarControllerEvent.GOT_EVENT, _gotEventHandler);
+			_calendar = null;
+			
 			_db.destroy();
 			_db.removeEventListener(Event.COMPLETE, _dbCompleteHandler);
 			_db.removeEventListener(UserDBControllerEvent.USER_FOUND, _dbHandler);
@@ -215,6 +219,9 @@ package
 			
 			_sound.destroy();
 			_sound = null;
+			
+			removeChild(_background);
+			_background.destroy();
 		}
 	}
 }

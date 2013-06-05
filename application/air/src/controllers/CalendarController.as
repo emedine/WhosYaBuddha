@@ -203,21 +203,6 @@ package controllers
 			}
 		}
 		
-		public function destroy():void
-		{
-			if (_destroyed) return;
-			
-			_stage = null;
-			
-			if (_webView)
-			{
-				_webView.dispose();
-				_webView = null;
-			}
-			
-			_destroyed = true;
-		}
-		
 		private function _checkForOauthToken():void
 		{
 			var file:File = File.applicationStorageDirectory.resolvePath(tokenFileName);
@@ -262,6 +247,29 @@ package controllers
 		private function _checkTokenExpiration():Boolean
 		{
 			 return ((_tokenCreationDate - new Date().time) / 1000) >= _tokenExpiresIn;
+		}
+		
+		public function destroy():void
+		{
+			if (_destroyed) return;
+			
+			_stage = null;
+			_events = null;
+			
+			if (_webView)
+			{
+				_webView.dispose();
+				_webView = null;
+			}
+			
+			if (_eventChecker)
+			{
+				_eventChecker.removeEventListener(TimerEvent.TIMER, _checkEventsHandler);
+				_eventChecker.stop();
+				_eventChecker = null;
+			}
+			
+			_destroyed = true;
 		}
 		
 		public function get destroyed():Boolean

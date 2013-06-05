@@ -97,7 +97,7 @@ package controllers
 		
 		private function _errorHandler(event:SQLErrorEvent):void
 		{
-			trace("db:", event.type + "\ndb:", event.error.message);
+			LogController.log("db: " + event.type + " : " + event.error.message);
 		}
 		
 		public function generate(model:Object = null):String
@@ -149,8 +149,10 @@ package controllers
 		{
 			if (_destroyed) return;
 			
-			trace("IMPLEMENT DESTROY FUNCTION AT MESSAGECONTROLLER")
-			//todo: implement function
+			_connection.removeEventListener(SQLEvent.OPEN, _openHandler); 
+			_connection.removeEventListener(SQLErrorEvent.ERROR, _errorHandler);
+			_connection.close();
+			_connection = null;
 		}
 		
 		public function get destroyed():Boolean

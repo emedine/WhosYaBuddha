@@ -48,7 +48,7 @@ package controllers
 		
 		private function _errorHandler(event:SQLErrorEvent):void
 		{
-			trace("db:", event.type);
+			LogController.log("db: " + event.type);
 		}
 		
 		public function getUserByRFID(rfid:String):void
@@ -89,7 +89,7 @@ package controllers
 
 		private function _selectErrorHandler(event:SQLErrorEvent):void
 		{
-			trace("db:", event.type + "\ndb:", event.error.message);
+			LogController.log("db: " + event.type + " : " + event.error.message);
 		}
 		
 		public function destroy():void

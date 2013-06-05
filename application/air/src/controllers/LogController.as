@@ -1,8 +1,10 @@
 package controllers
 {
 	import flash.text.TextField;
+	
+	import oak.interfaces.IDestroyable;
 
-	public class LogController
+	public class LogController implements IDestroyable
 	{
 		static private var _instance:LogController;		
 		
@@ -17,6 +19,7 @@ package controllers
 		}
 		
 		private var _textfield:TextField;
+		private var _destroyed:Boolean;
 		
 		public function LogController(singleton:Singleton)
 		{
@@ -36,6 +39,21 @@ package controllers
 		static public function log(message:String):void
 		{
 			instance.log(message);
+		}
+		
+		public function destroy():void
+		{
+			if (_destroyed) return;
+			
+			_textfield = null;
+			_instance = null;
+			
+			_destroyed = true;
+		}
+		
+		public function get destroyed():Boolean
+		{
+			return _destroyed;
 		}
 	}
 }
