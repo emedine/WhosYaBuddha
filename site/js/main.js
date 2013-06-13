@@ -1,4 +1,4 @@
-/*global jQuery, moment, Modernizr*/
+/*global jQuery, Modernizr*/
 jQuery(function ($) {
 	var $window = $(window);
 	$window.resize(resizeVideo);
@@ -9,8 +9,7 @@ jQuery(function ($) {
 		VIDWIDTH = 1920,
 		VIDHEIGHT = 1080,
 		VIDHEIGHT_MAX = 600,
-		SCALE = VIDHEIGHT / VIDWIDTH,
-		TWITTER_ACCOUNT = 'whosyabuddha';
+		SCALE = VIDHEIGHT / VIDWIDTH;
 
 	function resizeVideo() {
 		$videoContainer.css({
@@ -53,19 +52,5 @@ jQuery(function ($) {
 
 	$('h1').fitText(1.8, {
 		maxFontSize: 34
-	});
-
-
-	$('#tweet-holder').tweets({username: TWITTER_ACCOUNT}, function (data) {
-		var $tweets = $('.tweet');
-
-		$.each(data, function (index) {
-			var $tweet = $tweets.eq(index),
-				date = moment(this.created_at);
-
-			$('p', $tweet).html(this.text);
-			$('a', $tweet).attr('href', 'http://www.twitter.com/' + TWITTER_ACCOUNT + '/status/' + this.id_str);
-			$('time', $tweet).attr('datetime', this.created_at).html(date.format('MMMM Do YYYY, h:mm'));
-		});
 	});
 });
